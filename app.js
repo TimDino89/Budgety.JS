@@ -4,14 +4,14 @@
 var budgetController = (function() {
 
 //  Create objects with input values
-function Expence(type, description, value) {
-  this.type = type;
+function Expence(id, description, value) {
+  this.id = id;
   this.desc = description;
   this.value = value;
 };
 
-function Income(type, description, value) {
-  this.type = type;
+function Income(id, description, value) {
+  this.id = id;
   this.desc = description;
   this.value = value;
 };
@@ -30,19 +30,33 @@ var data = {
 
 
   return {
+    // storageData
+    setStorage: function() {
+      localStorage.setItem('data', JSON.stringify(data));
+    },
+
+    getStorage: function() {
+      var storageData = JSON.parse(localStorage.getItem('data'));
+      return storageData;
+    },
+
     // Create a new object and add to the data
     addItem: function(type, description, value) {
-      var newItem;
+      var newItem, id;
+
+      if (data.allItems[type].length > 0) {
+        id = data.allItems[type][data.allItems[type].length - 1].id + 1;
+      } else {
+        id = 0;
+      }
 
       if (type === 'inc') {
-        newItem = new Income(type, description, value);
+        newItem = new Income(id, description, value);
       } else if (type === 'exp') {
-        newItem = new Expence(type, description, value);
+        newItem = new Expence(id, description, value);
       }
 
       data.allItems[type].push(newItem);
-
-      localStorage.setItem('oppa', JSON.stringify(data));
 
       return newItem;
     },
@@ -114,7 +128,7 @@ var UIController = (function() {
     },
 
     // Add List Item
-    addListItem: function(obj) {
+    addListItem: function(type, obj) {
 
       var itemIcon = createElement('div', { className: newDOM.itemIcon });
       var itemBtn = createElement('div', { className: newDOM.itemButton }, itemIcon);
@@ -124,7 +138,7 @@ var UIController = (function() {
       var itemTitle = createElement('div', { className: newDOM.itemDesc }, obj.desc)
       var listItem = createElement('div', { className: newDOM.listItem }, itemTitle, itemRight,);
 
-      document.querySelector(DOMelements[obj.type]).appendChild(listItem);
+      document.querySelector(DOMelements[type]).appendChild(listItem);
     },
 
   };
@@ -156,8 +170,13 @@ var appController = (function(budgetCtrl, UICtrl) {
     // Get New Object
     var obj = budgetCtrl.addItem(input.type, input.description, input.value);
 
-    UICtrl.addListItem(obj);
+    budgetCtrl.setStorage();
 
+    var storage = budgetCtrl.getStorage();
+
+    UICtrl.addListItem(input.type, obj);
+
+    console.log(storage);
     console.log(obj);
     console.log(budgetController.data);
   };
