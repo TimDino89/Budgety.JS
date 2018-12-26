@@ -28,18 +28,7 @@ var data = {
   }
 };
 
-
   return {
-    // storageData
-    setStorage: function() {
-      localStorage.setItem('data', JSON.stringify(data));
-    },
-
-    getStorage: function() {
-      var storageData = JSON.parse(localStorage.getItem('data'));
-      return storageData;
-    },
-
     // Create a new object and add to the data
     addItem: function(type, description, value) {
       var newItem, id;
@@ -59,6 +48,23 @@ var data = {
       data.allItems[type].push(newItem);
 
       return newItem;
+    },
+
+    // storageData
+    setStorage: function() {
+      localStorage.setItem('data', JSON.stringify(data));
+    },
+
+    getStorage: function() {
+      var localData = JSON.parse(localStorage.getItem('data'));
+      return localData;
+    },
+
+    updateData: function(storedData) {
+
+      data.allItems = storedData.allItems;
+
+      // console.log(data.allItems);
     },
 
     // Check the Data
@@ -128,8 +134,20 @@ var UIController = (function() {
     },
 
     // Add List Item
-    addListItem: function(type, obj) {
+    // addListItem: function(type, obj) {
 
+    //   var itemIcon = createElement('div', { className: newDOM.itemIcon });
+    //   var itemBtn = createElement('div', { className: newDOM.itemButton }, itemIcon);
+    //   var itemDel = createElement('div', { className: newDOM.itemDel }, itemBtn);
+    //   var itemDesc = createElement('div', { className: newDOM.itemValue }, obj.value);
+    //   var itemRight = createElement('div', { className: newDOM.itemRight }, itemDesc, itemDel);
+    //   var itemTitle = createElement('div', { className: newDOM.itemDesc }, obj.desc)
+    //   var listItem = createElement('div', { className: newDOM.listItem }, itemTitle, itemRight,);
+
+    //   document.querySelector(DOMelements[type]).appendChild(listItem);
+    // },
+
+    newAdd: function(type, obj) {
       var itemIcon = createElement('div', { className: newDOM.itemIcon });
       var itemBtn = createElement('div', { className: newDOM.itemButton }, itemIcon);
       var itemDel = createElement('div', { className: newDOM.itemDel }, itemBtn);
@@ -139,7 +157,10 @@ var UIController = (function() {
       var listItem = createElement('div', { className: newDOM.listItem }, itemTitle, itemRight,);
 
       document.querySelector(DOMelements[type]).appendChild(listItem);
-    },
+
+      // var text = document.querySelector(DOMelements[type]).innerHTML;
+      // console.log(text);
+    }
 
   };
 })();
@@ -170,21 +191,27 @@ var appController = (function(budgetCtrl, UICtrl) {
     // Get New Object
     var obj = budgetCtrl.addItem(input.type, input.description, input.value);
 
+    // Set data to local storage
     budgetCtrl.setStorage();
 
+    // get updated data from local storage
     var storage = budgetCtrl.getStorage();
 
-    UICtrl.addListItem(input.type, obj);
+    // Add new listItem
+    UICtrl.newAdd(input.type, obj);
 
     console.log(storage);
-    console.log(obj);
-    console.log(budgetController.data);
+    // console.log(obj);
+
   };
 
   return {
     // Initialization
     init: function() {
       setEventListeners();
+      if (budgetCtrl.getStorage()) {
+      budgetCtrl.updateData(budgetCtrl.getStorage());
+      }
     }
   };
 })(budgetController, UIController);
