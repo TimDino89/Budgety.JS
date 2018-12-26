@@ -4,14 +4,16 @@
 var budgetController = (function() {
 
 //  Create objects with input values
-function Expence(id, description, value) {
+function Expence(id, type, description, value) {
   this.id = id;
+  this.type = type;
   this.desc = description;
   this.value = value;
 };
 
-function Income(id, description, value) {
+function Income(id, type, description, value) {
   this.id = id;
+  this.type = type;
   this.desc = description;
   this.value = value;
 };
@@ -40,9 +42,9 @@ var data = {
       }
 
       if (type === 'inc') {
-        newItem = new Income(id, description, value);
+        newItem = new Income(id, type, description, value);
       } else if (type === 'exp') {
-        newItem = new Expence(id, description, value);
+        newItem = new Expence(id, type, description, value);
       }
 
       data.allItems[type].push(newItem);
@@ -93,7 +95,8 @@ var UIController = (function() {
     itemValue: "item__value",
     itemDel: "item__delete",
     itemButton: "item__delete--btn",
-    itemIcon: "ion-ios-close-outline"
+    itemIcon: "ion-ios-close-outline",
+    perc: "item__percentage"
   };
 
   // Create Element
@@ -133,34 +136,36 @@ var UIController = (function() {
       };
     },
 
-    // Add List Item
-    // addListItem: function(type, obj) {
+    newAdd: function(obj) {
+      
+      document.querySelector(DOMelements.inc).innerHTML = '';
+      document.querySelector(DOMelements.exp).innerHTML = '';
 
-    //   var itemIcon = createElement('div', { className: newDOM.itemIcon });
-    //   var itemBtn = createElement('div', { className: newDOM.itemButton }, itemIcon);
-    //   var itemDel = createElement('div', { className: newDOM.itemDel }, itemBtn);
-    //   var itemDesc = createElement('div', { className: newDOM.itemValue }, obj.value);
-    //   var itemRight = createElement('div', { className: newDOM.itemRight }, itemDesc, itemDel);
-    //   var itemTitle = createElement('div', { className: newDOM.itemDesc }, obj.desc)
-    //   var listItem = createElement('div', { className: newDOM.listItem }, itemTitle, itemRight,);
+      for (var key in obj) {
+        for (var i = 0; i < obj[key].length; i++) {
+          console.log(obj[key][i]);
 
-    //   document.querySelector(DOMelements[type]).appendChild(listItem);
-    // },
+          if (obj[key][i].type === 'exp') {
+            var percentage = createElement('div', { className: newDOM.perc }, '20%' );
+          } else {
+            percentage = '';
+          }
 
-    newAdd: function(type, obj) {
       var itemIcon = createElement('div', { className: newDOM.itemIcon });
       var itemBtn = createElement('div', { className: newDOM.itemButton }, itemIcon);
       var itemDel = createElement('div', { className: newDOM.itemDel }, itemBtn);
-      var itemDesc = createElement('div', { className: newDOM.itemValue }, obj.value);
-      var itemRight = createElement('div', { className: newDOM.itemRight }, itemDesc, itemDel);
-      var itemTitle = createElement('div', { className: newDOM.itemDesc }, obj.desc)
-      var listItem = createElement('div', { className: newDOM.listItem }, itemTitle, itemRight,);
+      var itemDesc = createElement('div', { className: newDOM.itemValue }, obj[key][i].value);
+      var itemRight = createElement('div', { className: newDOM.itemRight }, itemDesc, percentage, itemDel);
+      var itemTitle = createElement('div', { className: newDOM.itemDesc }, obj[key][i].desc)
+      var listItem = createElement('div', { className: newDOM.listItem }, itemTitle, itemRight);
+      var wrapper = createElement('div', { className: '.wrapper' }, listItem);
 
-      document.querySelector(DOMelements[type]).appendChild(listItem);
+        var text = wrapper.innerHTML;
 
-      // var text = document.querySelector(DOMelements[type]).innerHTML;
-      // console.log(text);
-    }
+        document.querySelector(DOMelements[obj[key][i].type]).innerHTML += text;
+        }
+      }
+    },
 
   };
 })();
@@ -189,7 +194,7 @@ var appController = (function(budgetCtrl, UICtrl) {
     var input = UICtrl.getValues();
 
     // Get New Object
-    var obj = budgetCtrl.addItem(input.type, input.description, input.value);
+    budgetCtrl.addItem(input.type, input.description, input.value);
 
     // Set data to local storage
     budgetCtrl.setStorage();
@@ -198,10 +203,12 @@ var appController = (function(budgetCtrl, UICtrl) {
     var storage = budgetCtrl.getStorage();
 
     // Add new listItem
-    UICtrl.newAdd(input.type, obj);
+    UICtrl.newAdd(storage.allItems);
 
-    console.log(storage);
+    // console.log(storage);
     // console.log(obj);
+
+    return storage.allItems;
 
   };
 
@@ -211,6 +218,10 @@ var appController = (function(budgetCtrl, UICtrl) {
       setEventListeners();
       if (budgetCtrl.getStorage()) {
       budgetCtrl.updateData(budgetCtrl.getStorage());
+
+      var storage = budgetCtrl.getStorage();
+
+      UICtrl.newAdd(storage.allItems);
       }
     }
   };
