@@ -55,12 +55,17 @@ var calcTotal = function(type) {
 
 // Delete Item
 var deleteItem = function(obj) {  
-  for (var i = 0; i < data.allItems[obj.type].length; i++) {
-      // If elements ID === index, delete element from array
-      if (data.allItems[obj.type][i].id == obj.index) {
-      data.allItems[obj.type].splice(i, 1);
-    };
+  // for (var i = 0; i < data.allItems[obj.type].length; i++) {
+  //     // If elements ID === index, delete element from array
+  //     if (data.allItems[obj.type][i].id == obj.index) {
+  //     data.allItems[obj.type].splice(i, 1);
+  //   };
+  // }
+
+  for (var i = 0; i < data.total[obj.type].length; i++) {
+    console.log(data.total[obj.type][i]);
   }
+  
 };
 
   return {
