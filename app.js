@@ -50,7 +50,6 @@ var calcTotal = function(arr) {
     sum += +arr[i].value;
   }
 
-  console.log(sum);
   return sum;
 };
 
@@ -59,7 +58,9 @@ var deleteItem = function(obj) {
   for (var i = 0; i < data.allItems[obj.type].length; i++) {
       // If elements ID === index, delete element from array
       if (data.allItems[obj.type][i].id == obj.index) {
+
         data.allItems[obj.type].splice(i, 1);
+
         data.total[obj.type].splice(i, 1);
       };
   }
@@ -104,8 +105,6 @@ var deleteItem = function(obj) {
         index: arr[1]
       };
 
-      console.log(obj);
-
       deleteItem(obj);
     },
 
@@ -116,7 +115,11 @@ var deleteItem = function(obj) {
 
       data.budget = income - expence;
 
+     if (income) {
       var perc = Math.round((expence / income) * 100);
+     } else {
+       perc = -1;
+     }
 
       var allAmounts = {
         inc: income,
@@ -260,7 +263,12 @@ var UIController = (function() {
       document.querySelector(DOMelements.budgetOut).textContent = obj.budget;
       document.querySelector(DOMelements.incomeOut).textContent = obj.inc;
       document.querySelector(DOMelements.expenceOut).textContent = obj.exp;
+
+      if (obj.perc > 0) {
       document.querySelector(DOMelements.expencePerc).textContent = obj.perc + '%';
+      } else {
+        document.querySelector(DOMelements.expencePerc).textContent = '---';
+      }
     },
 
   };
@@ -344,15 +352,14 @@ var appController = (function(budgetCtrl, UICtrl) {
   };
 
   var deleteItem = function(e) {
-    // Get item
+    // Call Delete function
     budgetCtrl.deleteListItem();
 
     // Delete from data
     budgetCtrl.setStorage();
+
     // Update data
     updateData();
-    // Delete from UI
-    
   };
 
   return {
