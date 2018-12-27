@@ -43,29 +43,26 @@ var data = {
 };
 
 // Calculate Total Incomes and Expences
-var calcTotal = function(type) {
+var calcTotal = function(arr) {
   var sum = 0;
 
-  for (var i = 0; i < data.total[type].length; i++) {
-    sum += data.total[type][i];
+  for (var i = 0; i < arr.length; i++) {
+    sum += +arr[i].value;
   }
 
+  console.log(sum);
   return sum;
 };
 
 // Delete Item
 var deleteItem = function(obj) {  
-  // for (var i = 0; i < data.allItems[obj.type].length; i++) {
-  //     // If elements ID === index, delete element from array
-  //     if (data.allItems[obj.type][i].id == obj.index) {
-  //     data.allItems[obj.type].splice(i, 1);
-  //   };
-  // }
-
-  for (var i = 0; i < data.total[obj.type].length; i++) {
-    console.log(data.total[obj.type][i]);
+  for (var i = 0; i < data.allItems[obj.type].length; i++) {
+      // If elements ID === index, delete element from array
+      if (data.allItems[obj.type][i].id == obj.index) {
+        data.allItems[obj.type].splice(i, 1);
+        data.total[obj.type].splice(i, 1);
+      };
   }
-  
 };
 
   return {
@@ -91,7 +88,7 @@ var deleteItem = function(obj) {
       data.allItems[type].push(newItem);
 
       // Add values to data
-      data.total[type].push(+newItem.value);
+      data.total[type].push(newItem);
 
       return newItem;
     },
@@ -114,8 +111,8 @@ var deleteItem = function(obj) {
 
     // Calculate Budget
     calculateBudget: function() {  
-      var income = calcTotal('inc');
-      var expence = calcTotal('exp');
+      var income = calcTotal(data.total.inc);
+      var expence = calcTotal(data.total.exp);
 
       data.budget = income - expence;
 
