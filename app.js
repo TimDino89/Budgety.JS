@@ -1,4 +1,5 @@
 "use strict";
+// -------------------------------- BUDGET CONTROLLER ----------------------------------
 
 // BUDGET CONTROLLER
 var budgetController = (function() {
@@ -155,6 +156,8 @@ var deleteItem = function(obj) {
   };
 })();
 
+// -------------------------------- UI CONTROLLER ----------------------------------
+
 // UI CONTROLLER
 var UIController = (function() {
   // DOM elements
@@ -169,7 +172,8 @@ var UIController = (function() {
     budgetOut: ".budget__value",
     incomeOut: ".budget__income--value",
     expenceOut: ".budget__expenses--value",
-    expencePerc: ".budget__expenses--percentage"
+    expencePerc: ".budget__expenses--percentage",
+    date: ".budget__title--month"
   };
 
   // New DOM Element classes
@@ -204,6 +208,31 @@ var UIController = (function() {
     }
 
     return element;
+  };
+
+  // Get Current Month and Year
+  var getDate = function() {
+    
+    var months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ];
+
+    var date = new Date();
+
+    var currentDate = ' ' + months[date.getMonth()] + ' ' + date.getFullYear();
+
+    return currentDate;
   };
 
   return {
@@ -271,8 +300,15 @@ var UIController = (function() {
       }
     },
 
+    // Display Date
+    displayDate: function() {
+      document.querySelector(DOMelements.date).textContent = getDate();
+    },
+
   };
 })();
+
+// -------------------------------- APPLICATION CONTROLLER ----------------------------------
 
 // APP CONTROLLER
 var appController = (function(budgetCtrl, UICtrl) {
@@ -300,7 +336,7 @@ var appController = (function(budgetCtrl, UICtrl) {
     });
   };
 
-  // Update DATA
+  // UPDATE DATA
   var updateData = function() {
     // Get data from local storage
     var storedData = budgetCtrl.getStorage();
@@ -322,11 +358,12 @@ var appController = (function(budgetCtrl, UICtrl) {
     // console.log(storedData);
   };
 
-  // Add new Item
+  // ADD NEW ITEM
   var addItem = function() {
     // Get Input Values
     var input = UICtrl.getValues();
 
+    // If inputs are empty, block adding item
     if (input.description && input.value) {
     // Get New Object
     budgetCtrl.addItem(input.type, input.description, input.value);
@@ -352,6 +389,7 @@ var appController = (function(budgetCtrl, UICtrl) {
     // console.log(storage);
   };
 
+  // DELETE ITEM
   var deleteItem = function(e) {
     // Call Delete function
     budgetCtrl.deleteListItem();
@@ -368,6 +406,7 @@ var appController = (function(budgetCtrl, UICtrl) {
     init: function() {
       setEventListeners();
       updateData();
+      UICtrl.displayDate();
     }
   };
 })(budgetController, UIController);
