@@ -132,6 +132,7 @@ var UIController = (function() {
     inputDescription: ".add__description",
     inputValue: ".add__value",
     addBtn: ".add__btn",
+    container: ".container",
     inc: ".income__list",
     exp: ".expenses__list",
     budgetOut: ".budget__value",
@@ -148,7 +149,7 @@ var UIController = (function() {
     itemValue: "item__value",
     itemDel: "item__delete",
     itemButton: "item__delete--btn",
-    itemIcon: "ion-ios-close-outline",
+    // itemIcon: "ion-ios-close-outline",
     perc: "item__percentage"
   };
 
@@ -210,12 +211,12 @@ var UIController = (function() {
           var percentage = '';
 
         var itemIcon = createElement('div', { className: newDOM.itemIcon });
-        var itemBtn = createElement('div', { className: newDOM.itemButton }, itemIcon);
+        var itemBtn = createElement('div', { className: newDOM.itemButton }, 'x');
         var itemDel = createElement('div', { className: newDOM.itemDel }, itemBtn);
         var itemDesc = createElement('div', { className: newDOM.itemValue }, obj[key][i].value);
         var itemRight = createElement('div', { className: newDOM.itemRight }, itemDesc, percentage, itemDel);
         var itemTitle = createElement('div', { className: newDOM.itemDesc }, obj[key][i].desc)
-        var listItem = createElement('div', { className: newDOM.listItem }, itemTitle, itemRight);
+        var listItem = createElement('div', { className: newDOM.listItem, id: obj[key][i].type + '-' + obj[key][i].id }, itemTitle, itemRight);
         var wrapper = createElement('div', { className: '.wrapper' }, listItem);
 
         var text = wrapper.innerHTML;
@@ -226,6 +227,13 @@ var UIController = (function() {
       }
     },
 
+    // Delete Item
+    deleteItem: function() {
+      console.log('test delete');
+      console.log(event.target.closest('.item'));
+    },
+
+    // Display BUDGET
     displayBudget: function(obj) {
       document.querySelector(DOMelements.budgetOut).textContent = obj.budget;
       document.querySelector(DOMelements.incomeOut).textContent = obj.inc;
@@ -241,15 +249,23 @@ var appController = (function(budgetCtrl, UICtrl) {
   // Get DOM elements
   var DOM = UICtrl.getDOM();
 
-  // Set event listeners
+  // Set Event on Add Button
   var setEventListeners = function() {
     document.querySelector(DOM.addBtn).addEventListener("click", function() {
       addItem();
     });
 
+    // Set event on ENTER key
     document.body.addEventListener("keypress", function(event) {
       if (event.keyCode === 13) {
         addItem();
+      }
+    });
+
+    // Set event on Delete Button
+    document.querySelector(DOM.container).addEventListener('click', function(event){
+      if (event.target.className === "item__delete--btn") {
+        deleteItem();
       }
     });
   };
@@ -303,9 +319,19 @@ var appController = (function(budgetCtrl, UICtrl) {
 
     UICtrl.displayBudget(budgetCtrl.calculateBudget());
 
-
     // Teeeeeeeeeeest
     console.log(storage);
+  };
+
+  var deleteItem = function(e) {
+    // Delete from data
+
+    // Update data
+
+    
+
+    // Delete from UI
+    UICtrl.deleteItem();
   };
 
   return {
