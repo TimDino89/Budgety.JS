@@ -136,14 +136,13 @@ var UIController = (function() {
       };
     },
 
-    newAdd: function(obj) {
+    addListItem: function(obj) {
       
       document.querySelector(DOMelements.inc).innerHTML = '';
       document.querySelector(DOMelements.exp).innerHTML = '';
 
       for (var key in obj) {
         for (var i = 0; i < obj[key].length; i++) {
-          console.log(obj[key][i]);
 
           if (obj[key][i].type === 'exp') {
             var percentage = createElement('div', { className: newDOM.perc }, '20%' );
@@ -188,6 +187,22 @@ var appController = (function(budgetCtrl, UICtrl) {
     });
   };
 
+  // Update DATA
+  var updateData = function() {
+    // Get data from local storage
+    var storedData = budgetCtrl.getStorage();
+
+    // Update data using stored data
+    if (storedData) {
+    budgetCtrl.updateData(storedData);
+    }
+
+    // Display list Items
+    UICtrl.addListItem(storedData.allItems);
+    
+    console.log(storedData);
+  };
+
   // Add new Item
   var addItem = function() {
     // Get Input Values
@@ -203,26 +218,14 @@ var appController = (function(budgetCtrl, UICtrl) {
     var storage = budgetCtrl.getStorage();
 
     // Add new listItem
-    UICtrl.newAdd(storage.allItems);
-
-    // console.log(storage);
-    // console.log(obj);
-
-    return storage.allItems;
-
+    UICtrl.addListItem(storage.allItems);
   };
 
   return {
     // Initialization
     init: function() {
       setEventListeners();
-      if (budgetCtrl.getStorage()) {
-      budgetCtrl.updateData(budgetCtrl.getStorage());
-
-      var storage = budgetCtrl.getStorage();
-
-      UICtrl.newAdd(storage.allItems);
-      }
+      updateData();
     }
   };
 })(budgetController, UIController);
