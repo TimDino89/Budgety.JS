@@ -327,6 +327,7 @@ var appController = (function(budgetCtrl, UICtrl) {
     // Get Input Values
     var input = UICtrl.getValues();
 
+    if (input.description && input.value) {
     // Get New Object
     budgetCtrl.addItem(input.type, input.description, input.value);
 
@@ -341,7 +342,7 @@ var appController = (function(budgetCtrl, UICtrl) {
 
     // Add new listItem
     UICtrl.addListItem(storage.allItems);
-
+    }
     // Clear Input
     UICtrl.clearInput();
 
