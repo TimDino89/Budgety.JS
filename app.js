@@ -70,7 +70,6 @@ var calcTotal = function(type) {
         newItem = new Income(id, type, description, value);
       } else if (type === 'exp') {
         newItem = new Expence(id, type, description, value);
-        newItem.calcPercentages();
       }
 
       // Add object to data
@@ -89,10 +88,13 @@ var calcTotal = function(type) {
 
       data.budget = income - expence;
 
+      var perc = Math.round((expence / income) * 100);
+
       var allAmounts = {
         inc: income,
         exp: expence,
-        budget: data.budget
+        budget: data.budget,
+        perc: perc
       };
 
       return allAmounts;
@@ -205,7 +207,7 @@ var UIController = (function() {
       for (var key in obj) {
         for (var i = 0; i < obj[key].length; i++) {
 
-          var percentage = 'lll';
+          var percentage = '';
 
         var itemIcon = createElement('div', { className: newDOM.itemIcon });
         var itemBtn = createElement('div', { className: newDOM.itemButton }, itemIcon);
@@ -228,6 +230,7 @@ var UIController = (function() {
       document.querySelector(DOMelements.budgetOut).textContent = obj.budget;
       document.querySelector(DOMelements.incomeOut).textContent = obj.inc;
       document.querySelector(DOMelements.expenceOut).textContent = obj.exp;
+      document.querySelector(DOMelements.expencePerc).textContent = obj.perc + '%';
     },
 
   };
