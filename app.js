@@ -195,11 +195,10 @@ var appController = (function(budgetCtrl, UICtrl) {
     // Update data using stored data
     if (storedData) {
     budgetCtrl.updateData(storedData);
-    }
 
-    // Display list Items
+      // Display list Items
     UICtrl.addListItem(storedData.allItems);
-    
+    }
     console.log(storedData);
   };
 
