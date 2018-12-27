@@ -53,6 +53,16 @@ var calcTotal = function(type) {
   return sum;
 };
 
+// Delete Item
+var deleteItem = function(obj) {  
+  for (var i = 0; i < data.allItems[obj.type].length; i++) {
+      // If elements ID === index, delete element from array
+      if (data.allItems[obj.type][i].id == obj.index) {
+      data.allItems[obj.type].splice(i, 1);
+    };
+  }
+};
+
   return {
     // Create a new object and add to the data
     addItem: function(type, description, value) {
@@ -79,6 +89,22 @@ var calcTotal = function(type) {
       data.total[type].push(+newItem.value);
 
       return newItem;
+    },
+
+    // Delete Item
+    deleteListItem: function() {
+      var id = event.target.closest('.item').id; 
+      
+      var arr = id.split('-');
+      
+      var obj = {
+        type: arr[0],
+        index: arr[1]
+      };
+
+      console.log(obj);
+
+      deleteItem(obj);
     },
 
     // Calculate Budget
@@ -227,12 +253,6 @@ var UIController = (function() {
       }
     },
 
-    // Delete Item
-    deleteItem: function() {
-      console.log('test delete');
-      console.log(event.target.closest('.item'));
-    },
-
     // Display BUDGET
     displayBudget: function(obj) {
       document.querySelector(DOMelements.budgetOut).textContent = obj.budget;
@@ -289,7 +309,7 @@ var appController = (function(budgetCtrl, UICtrl) {
     UICtrl.displayBudget(budget);
 
     // Teeeeeeeeeeest
-    console.log(storedData);
+    // console.log(storedData);
   };
 
   // Add new Item
@@ -298,9 +318,7 @@ var appController = (function(budgetCtrl, UICtrl) {
     var input = UICtrl.getValues();
 
     // Get New Object
-    var obj = budgetCtrl.addItem(input.type, input.description, input.value);
-
-    console.log(obj);
+    budgetCtrl.addItem(input.type, input.description, input.value);
 
     // Calculate budget
     budgetCtrl.calculateBudget();
@@ -320,18 +338,19 @@ var appController = (function(budgetCtrl, UICtrl) {
     UICtrl.displayBudget(budgetCtrl.calculateBudget());
 
     // Teeeeeeeeeeest
-    console.log(storage);
+    // console.log(storage);
   };
 
   var deleteItem = function(e) {
+    // Get item
+    budgetCtrl.deleteListItem();
+
     // Delete from data
-
+    budgetCtrl.setStorage();
     // Update data
-
-    
-
+    updateData();
     // Delete from UI
-    UICtrl.deleteItem();
+    
   };
 
   return {
