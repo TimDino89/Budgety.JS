@@ -235,6 +235,24 @@ var UIController = (function() {
     return currentDate;
   };
 
+   // Format number
+   var formatNumber = function(num, type) {
+    var numberSplit, int, dec;
+
+    num = Math.abs(num).toFixed(2);
+
+    numberSplit = num.split('.');
+    
+    int = numberSplit[0];
+    dec = numberSplit[1];
+
+    if (int.length > 3) {
+      int = int.substr(0, int.length - 3) + ',' + int.substr(int.length - 3, int.length);
+    }
+
+    return (type === 'inc' ? '+' : '-') + ' ' + int + '.' + dec;
+  };
+
   return {
     // Get DOM elements class names
     getDOM: function() {
@@ -270,7 +288,6 @@ var UIController = (function() {
 
           var percentage = '';
 
-        var itemIcon = createElement('div', { className: newDOM.itemIcon });
         var itemBtn = createElement('div', { className: newDOM.itemButton }, 'x');
         var itemDel = createElement('div', { className: newDOM.itemDel }, itemBtn);
         var itemDesc = createElement('div', { className: newDOM.itemValue }, obj[key][i].value);
@@ -289,9 +306,13 @@ var UIController = (function() {
 
     // Display BUDGET
     displayBudget: function(obj) {
-      document.querySelector(DOMelements.budgetOut).textContent = obj.budget;
-      document.querySelector(DOMelements.incomeOut).textContent = obj.inc;
-      document.querySelector(DOMelements.expenceOut).textContent = obj.exp;
+      var type;
+
+      obj.budget >= 0 ? (type = 'inc') : (type = 'exp');
+
+      document.querySelector(DOMelements.budgetOut).textContent = formatNumber(obj.budget, type);
+      document.querySelector(DOMelements.incomeOut).textContent = formatNumber(obj.inc, 'inc');
+      document.querySelector(DOMelements.expenceOut).textContent = formatNumber(obj.exp, 'exp');
 
       if (obj.perc > 0) {
       document.querySelector(DOMelements.expencePerc).textContent = obj.perc + '%';
