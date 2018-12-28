@@ -326,6 +326,18 @@ var UIController = (function() {
       document.querySelector(DOMelements.date).textContent = getDate();
     },
 
+    // Change input color
+    changeInput: function() {
+        var fields = document.querySelectorAll(DOMelements.inputType + ',' 
+                    + DOMelements.inputDescription + ',' + DOMelements.inputValue);
+  
+        for (var i = 0; i < fields.length; i++) {
+          fields[i].classList.toggle('red-focus');
+        }
+
+        document.querySelector(DOMelements.addBtn).classList.toggle('red');
+    },
+
   };
 })();
 
@@ -355,6 +367,9 @@ var appController = (function(budgetCtrl, UICtrl) {
         deleteItem();
       }
     });
+
+    // Add class red-focus for inputs
+    document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changeInput);
   };
 
   // UPDATE DATA
