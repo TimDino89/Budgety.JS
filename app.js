@@ -20,15 +20,17 @@ function Expence(id, type, description, value) {
   this.perc = -1;
 };
 
-// Expence.prototype.calcPercentages = function() {
-//   var sum = calcTotal('inc');
+// Calculate expence percentage
+Expence.prototype.calcPercentages = function(totalIncome) {
+  this.perc = 100;
+  console.log('Calc persentages function');
+};
 
-//   if (sum > 0) {
-//     this.perc = Math.round((this.value / sum) * 100);
-//   } else {
-//     this.perc = -1;
-//   }
-// };
+// Get Percentage
+Expence.prototype.getPercentages = function() {
+  console.log('get percentages function');
+  return this.perc;
+};
 
 // DATA
 var data = {
@@ -40,7 +42,8 @@ var data = {
     inc: [],
     exp: []
   },
-  budget: 0
+  budget: 0,
+  k: 50
 };
 
 // Calculate Total Incomes and Expences
@@ -150,6 +153,22 @@ var deleteItem = function(obj) {
       data.budget = storedData.budget;
     },
 
+    // Calculate percentages
+    calculatePerc: function(arr) {
+      console.log(arr);
+
+      for (var i = 0; i < arr.length; i++) {
+        console.log(arr[i] instanceof Expence);
+      }
+    },
+
+    // Get percentages
+    getPerc: function() {
+      data.allItems.exp.forEach(function(item) {
+        item.getPercentages();
+      });
+    },
+
     // Check the Data
     data: data
 
@@ -184,7 +203,6 @@ var UIController = (function() {
     itemValue: "item__value",
     itemDel: "item__delete",
     itemButton: "item__delete--btn",
-    // itemIcon: "ion-ios-close-outline",
     perc: "item__percentage"
   };
 
@@ -199,7 +217,7 @@ var UIController = (function() {
     if (children.length > 0) {
       children.forEach(function(child) {
         
-        if (typeof child === 'string') {
+        if (typeof child === 'string' || typeof child === 'number') {
           child = document.createTextNode(child);
         }
 
@@ -277,7 +295,11 @@ var UIController = (function() {
     },
 
     // Add new item to UI
-    addListItem: function(obj) {     
+    addListItem: function(obj) {  
+      
+      var percentage = '';
+      var itemPerc = '';
+
       // Clear HTML
       document.querySelector(DOMelements.inc).innerHTML = '';
       document.querySelector(DOMelements.exp).innerHTML = '';
@@ -286,12 +308,15 @@ var UIController = (function() {
       for (var key in obj) {
         for (var i = 0; i < obj[key].length; i++) {
 
-          var percentage = '';
+         if (obj[key][i].perc) {
+           percentage = obj[key][i].perc;
+           itemPerc = createElement('div', { className: newDOM.perc }, percentage);
+         }
 
         var itemBtn = createElement('div', { className: newDOM.itemButton }, 'x');
         var itemDel = createElement('div', { className: newDOM.itemDel }, itemBtn);
         var itemDesc = createElement('div', { className: newDOM.itemValue }, obj[key][i].value);
-        var itemRight = createElement('div', { className: newDOM.itemRight }, itemDesc, percentage, itemDel);
+        var itemRight = createElement('div', { className: newDOM.itemRight }, itemDesc, itemPerc, itemDel);
         var itemTitle = createElement('div', { className: newDOM.itemDesc }, obj[key][i].desc)
         var listItem = createElement('div', { className: newDOM.listItem, id: obj[key][i].type + '-' + obj[key][i].id }, itemTitle, itemRight);
         var wrapper = createElement('div', { className: '.wrapper' }, listItem);
@@ -390,8 +415,7 @@ var appController = (function(budgetCtrl, UICtrl) {
 
     UICtrl.displayBudget(budget);
 
-    // Teeeeeeeeeeest
-    // console.log(storedData);
+    budgetCtrl.calculatePerc(storedData.allItems.exp);
   };
 
   // ADD NEW ITEM
@@ -420,9 +444,6 @@ var appController = (function(budgetCtrl, UICtrl) {
     UICtrl.clearInput();
 
     UICtrl.displayBudget(budgetCtrl.calculateBudget());
-
-    // Teeeeeeeeeeest
-    // console.log(storage);
   };
 
   // DELETE ITEM
