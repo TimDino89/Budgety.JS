@@ -5,31 +5,19 @@
 var budgetController = (function() {
 
 //  Create objects with input values
-function Income(id, type, description, value) {
+var Income = function(id, type, description, value) {
   this.id = id;
   this.type = type;
   this.desc = description;
   this.value = value;
 };
 
-function Expence(id, type, description, value) {
+var Expence = function(id, type, description, value) {
   this.id = id;
   this.type = type;
   this.desc = description;
   this.value = value;
   this.perc = -1;
-};
-
-// Calculate expence percentage
-Expence.prototype.calcPercentages = function(totalIncome) {
-  this.perc = 100;
-  console.log('Calc persentages function');
-};
-
-// Get Percentage
-Expence.prototype.getPercentages = function() {
-  console.log('get percentages function');
-  return this.perc;
 };
 
 // DATA
@@ -151,22 +139,6 @@ var deleteItem = function(obj) {
       data.allItems = storedData.allItems;
       data.total = storedData.total;
       data.budget = storedData.budget;
-    },
-
-    // Calculate percentages
-    calculatePerc: function(arr) {
-      console.log(arr);
-
-      for (var i = 0; i < arr.length; i++) {
-        console.log(arr[i] instanceof Expence);
-      }
-    },
-
-    // Get percentages
-    getPerc: function() {
-      data.allItems.exp.forEach(function(item) {
-        item.getPercentages();
-      });
     },
 
     // Check the Data
@@ -414,8 +386,6 @@ var appController = (function(budgetCtrl, UICtrl) {
     var budget = budgetCtrl.calculateBudget();
 
     UICtrl.displayBudget(budget);
-
-    budgetCtrl.calculatePerc(storedData.allItems.exp);
   };
 
   // ADD NEW ITEM
