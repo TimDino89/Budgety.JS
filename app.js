@@ -403,7 +403,7 @@ var appController = (function(budgetCtrl, UICtrl) {
     document
       .querySelector(DOM.container)
       .addEventListener("click", function(e) {
-        if (event.target.className === "item__delete--btn") {
+        if (e.target.className === "item__delete--btn") {
           deleteItem(e);
         }
       });
