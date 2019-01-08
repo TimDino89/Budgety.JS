@@ -83,7 +83,7 @@ var budgetController = (function() {
     },
 
     // Delete Item
-    deleteListItem: function() {
+    deleteListItem: function(event) {
       var id = event.target.closest(".item").id;
 
       var arr = id.split("-");
@@ -464,7 +464,7 @@ var appController = (function(budgetCtrl, UICtrl) {
   // DELETE ITEM
   var deleteItem = function(e) {
     // Call Delete function
-    budgetCtrl.deleteListItem();
+    budgetCtrl.deleteListItem(e);
 
     // Delete from data
     budgetCtrl.setStorage();
