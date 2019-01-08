@@ -83,8 +83,8 @@ var budgetController = (function() {
     },
 
     // Delete Item
-    deleteListItem: function(event) {
-      var id = event.target.closest(".item").id;
+    deleteListItem: function(e) {
+      var id = e.target.closest(".item").id;
 
       var arr = id.split("-");
 
@@ -402,9 +402,9 @@ var appController = (function(budgetCtrl, UICtrl) {
     // Set event on Delete Button
     document
       .querySelector(DOM.container)
-      .addEventListener("click", function(event) {
+      .addEventListener("click", function(e) {
         if (event.target.className === "item__delete--btn") {
-          deleteItem(event);
+          deleteItem(e);
         }
       });
 
